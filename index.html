@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Level & Koin System | TikTok Style</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
+  background: radial-gradient(circle at 10% 20%, #0b1120, #030712);
+  color: #e2e8f0;
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+.main-card {
+  max-width: 1200px;
+  margin: auto;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(10px);
+  border-radius: 2rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 0.3rem;
+  background: linear-gradient(135deg,#c084fc,#60a5fa);
+  -webkit-background-clip: text;
+  color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+h1 img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.subhead {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px dashed #334155;
+  display: inline-block;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 6px;
+}
+
+/* TAB MENU - TETAP HORIZONTAL */
+.tab-menu {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: nowrap;
+}
+
+.tab-btn {
+  padding: 0.6rem 2rem;
+  border-radius: 60px;
+  border: none;
+  cursor: pointer;
+  background: #1e293b;
+  color: #cbd5e1;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab-btn.active {
+  background: #3b82f6;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(59,130,246,0.4);
+}
+
+.tab-btn:hover:not(.active) {
+  background: #2d3a5e;
+  transform: translateY(-2px);
+}
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+.card {
+  background: #0f172ae6;
+  padding: 1.2rem;
+  border-radius: 1.5rem;
+  border: 1px solid #334155;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  color: #cbd5e6;
+  font-size: 0.9rem;
+}
+
+select, button {
+  width: 100%;
+  padding: 11px 14px;
+  margin-top: 8px;
+  border-radius: 60px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+select {
+  background: #0f172a;
+  color: white;
+  border: 1px solid #334155;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+button {
+  background: linear-gradient(90deg,#2563eb,#1e40af);
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(0.98);
+}
+
+.result-box {
+  margin-top: 1.2rem;
+  padding: 1.2rem;
+  background: #020617b3;
+  border-radius: 1.2rem;
+  text-align: center;
+}
+
+/* LEVEL BADGE */
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #3b82f6;
+  padding: 6px 16px;
+  border-radius: 40px;
+}
+
+.level-badge-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.level-badge span {
+  font-weight: 700;
+  color: white;
+  font-size: 0.9rem;
+}
+
+/* TABEL - SEMUA UKURAN SERAGAM */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 1rem;
+  margin-top: 0.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 400px;
+}
+
+th {
+  background: #1e293b;
+  padding: 12px 10px;
+  color: #facc15;
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+}
+
+td {
+  padding: 10px 10px;
+  border-bottom: 1px solid #2d3a5e;
+  text-align: center;
+  vertical-align: middle;
+}
+
+tr:hover td {
+  background: #1e2a44;
+}
+
+/* LEVEL CELL - SERAGAM */
+.level-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.level-cell img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.level-cell span {
+  font-weight: 700;
+  background: #3b82f6;
+  padding: 5px 14px;
+  border-radius: 30px;
+  font-size: 14px;
+  min-width: 50px;
+  display: inline-block;
+}
+
+/* KOIN CELL - SERAGAM DENGAN LEVEL CELL */
+.koin-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.koin-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.koin-angka {
+  font-weight: 600;
+  font-size: 14px;
+  color: #e2e8f0;
+}
+
+/* RUPIAH CELL - SERAGAM */
+.rupiah-cell {
+  font-weight: 700;
+  color: #facc15;
+  font-size: 14px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 1.8rem;
+  font-size: 0.65rem;
+  opacity: 0.7;
+  padding-top: 1rem;
+  border-top: 1px solid #1e2a3a;
+}
+
+/* RESPONSIVE HP */
+@media (max-width: 640px) {
+  body { padding: 0.5rem; }
+  .main-card { padding: 0.8rem; }
+  h1 { font-size: 1.2rem; }
+  
+  .tab-menu { gap: 0.5rem; }
+  .tab-btn { padding: 0.4rem 1rem; font-size: 0.7rem; }
+  
+  .level-cell img { width: 24px; height: 24px; }
+  .level-cell span { padding: 3px 8px; font-size: 11px; min-width: 35px; }
+  
+  .koin-icon { width: 20px; height: 20px; }
+  .koin-angka { font-size: 11px; }
+  
+  .rupiah-cell { font-size: 11px; }
+  
+  th { font-size: 11px; padding: 8px 4px; }
+  td { padding: 6px 4px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="main-card">
+<h1>Hitung Level & Koin Tiktok</h1>
+
+
+<div class="tab-menu">
+  <button class="tab-btn active" data-tab="kalkulator">📱 Kalkulator</button>
+  <button class="tab-btn" data-tab="tabel">📊 Tabel Level</button>
+</div>
+
+<!-- KALKULATOR -->
+<div id="panel-kalkulator" class="panel active">
+<div class="card">
+<label>🎯 Pilih Level</label>
+<select id="levelSelect"></select>
+<button onclick="hitung()">✨ Hitung Total Koin ✨</button>
+<div class="result-box" id="result">💡 Pilih level dan tekan tombol</div>
+</div>
+</div>
+
+<!-- TABEL -->
+<div id="panel-tabel" class="panel">
+<div class="card">
+<div class="table-wrapper">
+<table id="levelTable">
+<thead>
+<tr>
+<th>🏅 Level</th>
+<th>🪙 Koin</th>
+<th>💰 Rupiah (Rp)</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+</div>
+</div>
+
+<footer>Dibuat Oleh : Dafid SEO | © 2026 Hak Cipta Dilindungi</footer>
+</div>
+
+<script>
+const hargaPerKoin = 203;
+
+// DATA LEVEL 1 - 50 LENGKAP
+const data = [
+[1,1],[2,8],[3,18],[4,34],[5,56],[6,90],[7,140],[8,220],[9,340],[10,530],
+[11,820],[12,1260],[13,1920],[14,2840],[15,4340],[16,6420],[17,9280],[18,13500],[19,19400],[20,27600],
+[21,39600],[22,54600],[23,75800],[24,105000],[25,144000],[26,196000],[27,265000],[28,357000],[29,478000],[30,637000],
+[31,845000],[32,1120000],[33,1470000],[34,1920000],[35,2500000],[36,3230000],[37,4180000],[38,5180000],[39,6890000],[40,8780000],
+[41,11200000],[42,14100000],[43,17800000],[44,22300000],[45,30000000],[46,37500000],[47,47500000],[48,60000000],[49,75000000],[50,97500000]
+];
+
+// FUNGSI GAMBAR (ganti sesuai folder gambar Anda)
+function getLevelImage(level) {
+  return `img/level${level}.png`;
+}
+const coinImage = "img/koin.png";
+
+// RENDER TABEL DENGAN UKURAN SERAGAM
+const tbody = document.getElementById("tbody");
+data.forEach(d => {
+  let level = d[0];
+  let koin = d[1];
+  let rupiah = koin * hargaPerKoin;
+  
+  const row = tbody.insertRow();
+  
+  // Kolom Level
+  const cellLevel = row.insertCell(0);
+  const levelDiv = document.createElement("div");
+  levelDiv.className = "level-cell";
+  const levelImg = document.createElement("img");
+  levelImg.src = getLevelImage(level);
+  levelImg.onerror = () => levelImg.style.display = "none";
+  const levelSpan = document.createElement("span");
+  levelSpan.textContent = level;
+  levelDiv.appendChild(levelImg);
+  levelDiv.appendChild(levelSpan);
+  cellLevel.appendChild(levelDiv);
+  
+  // Kolom Koin (dengan gambar)
+  const cellKoin = row.insertCell(1);
+  const koinDiv = document.createElement("div");
+  koinDiv.className = "koin-cell";
+  const koinImg = document.createElement("img");
+  koinImg.src = coinImage;
+  koinImg.className = "koin-icon";
+  koinImg.onerror = () => koinImg.style.display = "none";
+  const koinSpan = document.createElement("span");
+  koinSpan.className = "koin-angka";
+  koinSpan.textContent = koin.toLocaleString();
+  koinDiv.appendChild(koinImg);
+  koinDiv.appendChild(koinSpan);
+  cellKoin.appendChild(koinDiv);
+  
+  // Kolom Rupiah
+  const cellRupiah = row.insertCell(2);
+  cellRupiah.className = "rupiah-cell";
+  cellRupiah.textContent = `Rp ${rupiah.toLocaleString()}`;
+});
+
+// SELECT OPTIONS
+const select = document.getElementById("levelSelect");
+data.forEach(d => {
+  const option = document.createElement("option");
+  option.value = d[0];
+  option.textContent = `🏆 Level ${d[0]} — ${d[1].toLocaleString()} Koin`;
+  select.appendChild(option);
+});
+
+// FUNGSI HITUNG
+function hitung() {
+  let lvl = parseInt(select.value);
+  let item = data.find(d => d[0] == lvl);
+  if (!item) return;
+  let koin = item[1];
+  let rupiah = koin * hargaPerKoin;
+  
+  document.getElementById("result").innerHTML = `
+    <div class="level-badge" style="margin-bottom: 12px;">
+      <img src="${getLevelImage(lvl)}" class="level-badge-img" onerror="this.style.display='none'">
+      <span>Level ${lvl}</span>
+    </div>
+    <div style="margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <img src="${coinImage}" style="width: 24px; height: 24px; object-fit: contain;" onerror="this.style.display='none'">
+      <span style="font-size: 1rem; font-weight: 600;">${koin.toLocaleString()} Koin</span>
+    </div>
+    <div style="margin-top: 10px; font-size: 1.2rem; font-weight: bold; color: #facc15;">
+      💰 Rp ${rupiah.toLocaleString()}
+    </div>
+  `;
+}
+
+// TAB SWITCH
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.getElementById("panel-" + btn.dataset.tab).classList.add("active");
+  };
+});
+
+// HITUNG DEFAULT
+setTimeout(() => hitung(), 100);
+</script>
+
+</body>
+</html>
